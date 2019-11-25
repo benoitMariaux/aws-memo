@@ -1,21 +1,6 @@
 import boto3
 import uuid
 import os
-import sys
-
-# SSE-C
-# Server side encryption, but Custom encryption key provided
-
-# debug
-# import sys
-
-# file_object = open('/tmp/tttt', "r+")
-# for item in range(1,100):
-#     file_object.write("A text file: " + str(item) + "\n")
-    
-
-
-# sys.exit();
 
 BUCKET = "sse-c-demo-"+str(uuid.uuid4())
 
@@ -29,7 +14,7 @@ FILE = "/tmp/sse-c-file"
 OBJECT_KEY=os.path.basename(FILE)
 
 file_object = open(FILE, "w")
-for i in range(100):
+for i in range(3):
     file_object.write("Line %d\n" % (i+1))
 
 file_object.close()
@@ -46,7 +31,6 @@ s3.put_object(
 )
 
 file_object.close()
-
 
 # Check object encryption
 r = s3.head_object(
@@ -67,10 +51,3 @@ r = s3.get_object(
 )
 
 print(r['Body'].read())
-
-# TODO
-#r = s3.download_file(BUCKET, OBJECT_KEY, FILE)
-
-
-
-
