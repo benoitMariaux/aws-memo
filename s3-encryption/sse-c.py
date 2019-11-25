@@ -51,3 +51,12 @@ r = s3.get_object(
 )
 
 print(r['Body'].read())
+
+s3.delete_object(
+    Bucket=BUCKET,
+    Key=OBJECT_KEY
+)
+
+s3.delete_bucket(
+    Bucket=BUCKET
+)

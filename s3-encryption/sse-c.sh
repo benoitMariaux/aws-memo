@@ -6,7 +6,6 @@
 # https://cloudonaut.io/encrypting-sensitive-data-stored-on-s3/
 
 BUCKET=sse-c-demo-$(uuidgen | tr "[:upper:]" "[:lower:]")
-# BUCKET=sse-c-demo-aaaaaaaaaaaaaaaaaaa
 
 # Create bucket
 aws s3 mb s3://${BUCKET}
