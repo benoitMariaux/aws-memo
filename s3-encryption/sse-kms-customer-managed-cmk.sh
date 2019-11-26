@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# SSE-KMS 1
-# Server side encryption using keys created via KMS (AWS managed CMK)
+# SSE-KMS 2
+# Server side encryption using keys created via KMS (Customer managed CMK)
 # See :
 # https://cloudonaut.io/encrypting-sensitive-data-stored-on-s3/
 
@@ -13,6 +13,11 @@ aws s3 mb s3://${BUCKET}
 # Create a file
 FILE=/tmp/sse-kms-file
 echo "A text file" > $FILE
+
+# Create a KMS Key
+KEY_ID=$(aws kms create-key --output text --query 'KeyMetadata.KeyId')
+
+# TODO HERE
 
 aws s3 cp $FILE s3://$BUCKET \
     --sse aws:kms \
