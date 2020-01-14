@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Three Instances for the Systems Manager (SSM) part of the Stephane Maarek course"
+
+Parameters:
+  Region: 
+    Type: String
+    Default: eu-west-1
+  AMI:
+    Type: String
+    Default: ami-0713f98de93617bb4 # Linux AMI 2 in eu-west-1
+  InstanceType:
+    Type: String
+    AllowedValues:
+      - t2.micro # Free tier
+    Default: t2.micro
+
+Resources:
+  SecurityGroupForSSM:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EC2 For SSM, no ingress
+      GroupName: EC2-For-SSM
+      #VpcId: !Ref VpcId
+      # SecurityGroupIngress: # Nothing
+
+
+  FirstEC2Instances:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AMI
+      InstanceType: !Ref InstanceType
+      KeyName: My
+      SecurityGroups:
+        - !Ref SecurityGroupForSSM
+      Tags:
+        - Key: Name
+          Value: MyTestInstance
+      
