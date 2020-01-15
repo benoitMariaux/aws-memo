@@ -15,16 +15,37 @@ Parameters:
     Default: t2.micro
 
 Resources:
+  EC2ForSSMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ec2-for-ssm-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  
+  InstanceProfileForSSMRole: 
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref EC2ForSSMRole
+
   SecurityGroupForSSM:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: EC2 For SSM, no ingress
       GroupName: EC2-For-SSM
-      #VpcId: !Ref VpcId
-      # SecurityGroupIngress: # Nothing
 
 
-  FirstEC2Instances:
+  FirstEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: !Ref AMI
@@ -32,7 +53,46 @@ Resources:
       KeyName: My
       SecurityGroups:
         - !Ref SecurityGroupForSSM
+      IamInstanceProfile: !Ref InstanceProfileForSSMRole
       Tags:
         - Key: Name
-          Value: MyTestInstance
-      
+          Value: MyDevServer
+        - Key: Environment
+          Value: Dev
+        - Key: Team
+          Value: Finance 
+
+  SecondEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AMI
+      InstanceType: !Ref InstanceType
+      KeyName: My
+      SecurityGroups:
+        - !Ref SecurityGroupForSSM
+      IamInstanceProfile: !Ref InstanceProfileForSSMRole
+      Tags:
+        - Key: Name
+          Value: MyProdServer
+        - Key: Environment
+          Value: Prod
+        - Key: Team
+          Value: Finance 
+
+  ThirdEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AMI
+      InstanceType: !Ref InstanceType
+      KeyName: My
+      SecurityGroups:
+        - !Ref SecurityGroupForSSM
+      IamInstanceProfile: !Ref InstanceProfileForSSMRole
+      Tags:
+        - Key: Name
+          Value: MyOtherDevServer
+        - Key: Environment
+          Value: Dev
+        - Key: Team
+          Value: Operations
+    
