@@ -11,7 +11,7 @@ Parameters:
   InstanceType:
     Type: String
     AllowedValues:
-      - t2.micro # Free tier
+    - t2.micro # Free tier
     Default: t2.micro
 
 Resources:
@@ -22,21 +22,21 @@ Resources:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - "ec2.amazonaws.com"
-            Action:
-              - "sts:AssumeRole"
+        - Effect: Allow
+          Principal:
+            Service:
+            - "ec2.amazonaws.com"
+          Action:
+          - "sts:AssumeRole"
       ManagedPolicyArns:
-        - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+      - "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
   
   InstanceProfileForSSMRole: 
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: /
       Roles:
-        - !Ref EC2ForSSMRole
+      - !Ref EC2ForSSMRole
 
   SecurityGroupForSSM:
     Type: AWS::EC2::SecurityGroup
@@ -44,6 +44,16 @@ Resources:
       GroupDescription: EC2 For SSM, no ingress
       GroupName: EC2-For-SSM
 
+  SecurityGroupApache:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: EC2 For Apache, Port 80
+      GroupName: EC2-For-Apache
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
 
   FirstEC2Instance:
     Type: AWS::EC2::Instance
@@ -52,15 +62,16 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: My
       SecurityGroups:
-        - !Ref SecurityGroupForSSM
+      - !Ref SecurityGroupForSSM
+      - !Ref SecurityGroupApache
       IamInstanceProfile: !Ref InstanceProfileForSSMRole
       Tags:
-        - Key: Name
-          Value: MyDevServer
-        - Key: Environment
-          Value: Dev
-        - Key: Team
-          Value: Finance 
+      - Key: Name
+        Value: MyDevServer
+      - Key: Environment
+        Value: Dev
+      - Key: Team
+        Value: Finance 
 
   SecondEC2Instance:
     Type: AWS::EC2::Instance
@@ -69,15 +80,16 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: My
       SecurityGroups:
-        - !Ref SecurityGroupForSSM
+      - !Ref SecurityGroupForSSM
+      - !Ref SecurityGroupApache
       IamInstanceProfile: !Ref InstanceProfileForSSMRole
       Tags:
-        - Key: Name
-          Value: MyProdServer
-        - Key: Environment
-          Value: Prod
-        - Key: Team
-          Value: Finance 
+      - Key: Name
+        Value: MyProdServer
+      - Key: Environment
+        Value: Prod
+      - Key: Team
+        Value: Finance 
 
   ThirdEC2Instance:
     Type: AWS::EC2::Instance
@@ -86,13 +98,14 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: My
       SecurityGroups:
-        - !Ref SecurityGroupForSSM
+      - !Ref SecurityGroupForSSM
+      - !Ref SecurityGroupApache
       IamInstanceProfile: !Ref InstanceProfileForSSMRole
       Tags:
-        - Key: Name
-          Value: MyOtherDevServer
-        - Key: Environment
-          Value: Dev
-        - Key: Team
-          Value: Operations
+      - Key: Name
+        Value: MyOtherDevServer
+      - Key: Environment
+        Value: Dev
+      - Key: Team
+        Value: Operations
     
